@@ -6,28 +6,29 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateOhlcTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('ohlc', function (Blueprint $table) {
             $table->id();
 
-            $table->timestamp('time');
+            $table->string('altname');
 
-            $table->float('open_price');
-            $table->float('close_price');
+            $table->string('open_price');
+            $table->string('close_price');
 
-            $table->float('high_price');
-            $table->float('low_price');
+            $table->string('high_price');
+            $table->string('low_price');
 
-            $table->float('vwap'); // средняя цена по объему
-            $table->float('volume'); // объем торговли
+            $table->string('vwap'); // средняя цена по объему
+            $table->string('volume'); // объем торговли
 
-            $table->float('deals_count');
+            $table->integer('deals_count');
+
+            $table->string('time');
+
+            $table->timestamp('created_at');
+
+            $table->unique(['altname', 'time']);
         });
     }
 

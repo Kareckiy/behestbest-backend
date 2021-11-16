@@ -13,6 +13,11 @@ return [
     |
     */
 
+    'telegram' => [
+        'api_key' => '2052083579:AAH4NF8DG7svHLLN5jJS1uKTchSqvvv0Vxg',
+        'bot_username' => 'BehestBestBot',
+    ],
+
     'name' => env('APP_NAME', 'Laravel'),
 
     /*

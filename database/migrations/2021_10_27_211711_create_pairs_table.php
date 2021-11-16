@@ -23,6 +23,8 @@ class CreatePairsTable extends Migration
             $table->string('aclass_quote');
             $table->string('quote');
 
+            $table->boolean('is_active');
+
             $table->timestamps();
         });
     }
