@@ -77,7 +77,9 @@ class ActualizeService
     /** @var OhlcPerMoment[] $ohlcPerMoments */
     private function addOhlcPerMomentsForPair(array $ohlcPerMoments, Pair $pair): void
     {
-        foreach ($ohlcPerMoments as $ohlcPerMoment) {
+        $reversedOhlcPerMoments = array_reverse($ohlcPerMoments);
+
+        foreach ($reversedOhlcPerMoments as $ohlcPerMoment) {
             Ohlc::createFromOhlcPerMoment($ohlcPerMoment, $pair);
         }
     }

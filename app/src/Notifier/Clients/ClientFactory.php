@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\src\Notifier\Clients;
 
+use App\Http\Controllers\TelegramWebhookController;
 use Longman\TelegramBot\Telegram;
 
 class ClientFactory
@@ -15,7 +16,7 @@ class ClientFactory
             config('app.telegram.bot_username')
         );
 
-        #$telegram->addCommandsPath(config('app.telegram.commands_path'));
+        $telegram->addCommandsPath(TelegramWebhookController::COMMANDS_PATH);
 
         return $telegram;
     }

@@ -26,7 +26,9 @@ class Parser
      */
     public function getOhlcByPair(Pair $pair): GetOhlcResponse
     {
-        return $this->krakenProvider->getOhlcByPair($pair);
+        $since = now()->subHour()->getTimestamp();
+
+        return $this->krakenProvider->getOhlcByPair($pair, $since);
     }
 
     /** @return AssetPair[] */

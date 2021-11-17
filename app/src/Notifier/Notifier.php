@@ -22,7 +22,7 @@ class Notifier
     ): void
     {
         $payload = [
-            "Started {$commandTitle}",
+            "⌛️ Started {$commandTitle}",
         ];
 
         if ($elementsNumber) {
@@ -41,11 +41,11 @@ class Notifier
     ): void
     {
         $payload = [
-            "Started {$commandTitle}",
+            "✅ Finished {$commandTitle}",
             "El. number: {$elementsNumber}",
             "Success el. number: {$successElementsNumber}",
             "Error el. number: {$errorElementsNumber}",
-            "Duration: {$duration->format('H:m')}",
+            "Duration: {$duration->h}:{$duration->m}",
         ];
 
         $this->telegramClient->sendMessage($payload);
@@ -60,11 +60,11 @@ class Notifier
     ): void
     {
         $payload = [
-            "Started {$commandTitle}",
+            "✅ Finished {$commandTitle}",
             "Collected pairs: {$pairsCollected}",
             "New pairs: {$pairsAdded}",
             "Disabled pairs: {$pairsDisabled}",
-            "Duration: {$duration->format('H:m')}",
+            "Duration: {$duration->h}:{$duration->m}",
         ];
 
         $this->telegramClient->sendMessage($payload);

@@ -13,6 +13,8 @@ class TelegramWebhookController extends Controller
 {
     private Telegram $telegram;
 
+    public const COMMANDS_PATH = '/root/www/behestbest-backend/app/src/TelegramPanel/Commands';
+
     public function __construct(Telegram $telegram)
     {
         $this->telegram = $telegram;
@@ -20,9 +22,17 @@ class TelegramWebhookController extends Controller
 
     public function index(Request $request)
     {
-        Log::create(['data' => file_get_contents("php://input"), 'time' => now()]);
+        #Log::create(['data' => file_get_contents("php://input"), 'created_at' => now()]);
+        Log::create(
+            [
+                'data' => 'Хук отправлен',
+                'created_at' => now()
+            ]
+        );
 
-        $this->telegram->addCommandsPath('/root/www/behestbest-backend/app/src/TelegramPanel/Commands');
+        $this->telegram->addCommandsPath(self::COMMANDS_PATH);
+
+        #Log::create(['data' => 'Пройдено', 'created_at' => now()]);
 
         try {
             $this->telegram->handle();
