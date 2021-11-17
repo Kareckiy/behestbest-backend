@@ -9,7 +9,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('/telegram')->group(function () {
-    Route::post('/webhook', [TelegramWebhookController::class, 'index']);
+    Route::any('/webhook', [TelegramWebhookController::class, 'index']);
     Route::get('/set', [TelegramWebhookController::class, 'set']);
 });
 

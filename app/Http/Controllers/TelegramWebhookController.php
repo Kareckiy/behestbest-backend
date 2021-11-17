@@ -22,6 +22,8 @@ class TelegramWebhookController extends Controller
     {
         Log::create(['data' => file_get_contents("php://input"), 'time' => now()]);
 
+        $this->telegram->addCommandsPath('/root/www/behestbest-backend/app/src/TelegramPanel/Commands');
+
         try {
             $this->telegram->handle();
             Log::create(['data' => 'success_hook', 'created_at' => now()]);
