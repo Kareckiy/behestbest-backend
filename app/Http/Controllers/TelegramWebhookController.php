@@ -22,21 +22,12 @@ class TelegramWebhookController extends Controller
 
     public function index(Request $request)
     {
-        #Log::create(['data' => file_get_contents("php://input"), 'created_at' => now()]);
-        Log::create(
-            [
-                'data' => 'Хук отправлен',
-                'created_at' => now()
-            ]
-        );
+        Log::create(['data' => file_get_contents("php://input"), 'created_at' => now()]);
 
         $this->telegram->addCommandsPath(self::COMMANDS_PATH);
 
-        #Log::create(['data' => 'Пройдено', 'created_at' => now()]);
-
         try {
             $this->telegram->handle();
-            Log::create(['data' => 'success_hook', 'created_at' => now()]);
         } catch (\Exception $e) {
             Log::create(['data' => $e->getMessage(), 'created_at' => now()]);
         }
