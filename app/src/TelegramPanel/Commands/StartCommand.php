@@ -22,8 +22,7 @@ class StartCommand extends SystemCommand
     public function execute(): ServerResponse
     {
         return $this->replyToChat(
-            'Hi there!' . PHP_EOL .
-            'Type /help to see all commands!'
+            'Hi'
         );
     }
 }

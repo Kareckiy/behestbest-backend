@@ -24,8 +24,6 @@ class TelegramWebhookController extends Controller
     {
         Log::create(['data' => file_get_contents("php://input"), 'created_at' => now()]);
 
-        $this->telegram->addCommandsPath(self::COMMANDS_PATH);
-
         try {
             $this->telegram->handle();
         } catch (\Exception $e) {

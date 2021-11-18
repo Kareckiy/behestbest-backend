@@ -4,39 +4,38 @@ declare(strict_types=1);
 
 namespace App\src\TelegramPanel\Commands;
 
-use App\Models\Log;
 use App\Models\Ohlc;
-use Exception;
-use Longman\TelegramBot\Commands\SystemCommand;
+use App\Models\Pair;
 use Longman\TelegramBot\Entities\ServerResponse;
+use Longman\TelegramBot\Commands\UserCommand;
 
-class CountOhlcCommand extends SystemCommand
+class CountOhlcCommand extends UserCommand
 {
     protected $name = 'count';
 
     protected $description = 'Count ohlc command';
 
-    protected $usage = '/count';
+    protected $usage = '/count <data>';
 
     protected $version = '1.2.0';
 
-    protected $private_only = true;
-
     public function execute(): ServerResponse
     {
-        try {
-            $countOhlc = Ohlc::count();
+        $dataToCount = trim($this->getMessage()->getText(true));
 
-            return $this->replyToChat(
-                'OHLC number: '.$countOhlc
-            );
-        } catch (Exception $e) {
-            Log::create(
-                [
-                    'data' => 'RUN',
-                    'created_at' => now()
-                ]
-            );
+        $response = 'Не определена сущность для подсчета';
+
+        switch ($dataToCount) {
+            case 'ohlc':
+                $countOhlc = Ohlc::count();
+                $response = "Ohlc number: {$countOhlc}";
+                break;
+            case 'pairs':
+                $countPairs = Pair::where('is_active', 1)->count();
+                $response = "Active pairs number: {$countPairs}";
+                break;
         }
+
+        return $this->replyToChat($response);
     }
 }
