@@ -45,7 +45,7 @@ class Notifier
             "El. number: {$elementsNumber}",
             "Success el. number: {$successElementsNumber}",
             "Error el. number: {$errorElementsNumber}",
-            "Duration: {$duration->h}:{$duration->m}",
+            "Duration: " . $duration->format("%H:%I"),
         ];
 
         $this->telegramClient->sendMessage($payload);
@@ -64,7 +64,7 @@ class Notifier
             "Collected pairs: {$pairsCollected}",
             "New pairs: {$pairsAdded}",
             "Disabled pairs: {$pairsDisabled}",
-            "Duration: {$duration->h}:{$duration->m}",
+            "Duration: " . $duration->format("%H:%I"),
         ];
 
         $this->telegramClient->sendMessage($payload);

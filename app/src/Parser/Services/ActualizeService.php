@@ -38,11 +38,6 @@ class ActualizeService
 
         $pairs = $this->pairsStorage->getActivePairs();
 
-        $this->notifier->notifyCommandStarted(
-            $commandTitle,
-            count($pairs)
-        );
-
         $errorsCount = 0;
         $successAddedCount = 0;
         $startTime = now();
@@ -87,10 +82,6 @@ class ActualizeService
     public function updatePairs(): void
     {
         $commandTitle = 'Collecting pairs';
-
-        $this->notifier->notifyCommandStarted(
-            $commandTitle,
-        );
 
         $startTime = now();
 
