@@ -42,15 +42,10 @@ class ActualizeService
         foreach ($pairs as $pair) {
             $ohlcByPair = $this->parser->getOhlcByPair($pair);
 
-            try {
-                $addOhlcPerMomentsForPair = $this->addOhlcPerMomentsForPair($ohlcByPair->getOhlcPerMoments(), $pair);
-                $collectedOhlcNumber += $addOhlcPerMomentsForPair->getOhlcForPairNumber();
-                $successAddedOhlcNumber += $addOhlcPerMomentsForPair->getAddedOhlcNumber();
-                $outdatedOhlcNumber += $addOhlcPerMomentsForPair->getOutdatedOhlcNumber();
-            } catch (Exception $e) {
-                // logger()->error();
-                // Поскольку в ohlc уникальный ключ altname, timestamp
-            }
+            $addOhlcPerMomentsForPair = $this->addOhlcPerMomentsForPair($ohlcByPair->getOhlcPerMoments(), $pair);
+            $collectedOhlcNumber += $addOhlcPerMomentsForPair->getOhlcForPairNumber();
+            $successAddedOhlcNumber += $addOhlcPerMomentsForPair->getAddedOhlcNumber();
+            $outdatedOhlcNumber += $addOhlcPerMomentsForPair->getOutdatedOhlcNumber();
 
             usleep(self::HALF_SECOND_IN_MS);
         }
@@ -69,18 +64,24 @@ class ActualizeService
     {
         $allOhlcForPairNumber = count($ohlcPerMoments);
         $addedOhlcNumber = 0;
+        $outdatedOhlcNumber = 0;
 
         $reversedOhlcPerMoments = array_reverse($ohlcPerMoments);
 
         foreach ($reversedOhlcPerMoments as $ohlcPerMoment) {
-            Ohlc::createFromOhlcPerMoment($ohlcPerMoment, $pair);
-            ++$addedOhlcNumber;
+            try {
+                Ohlc::createFromOhlcPerMoment($ohlcPerMoment, $pair);
+                ++$addedOhlcNumber;
+            } catch (Exception $e) {
+                ++$outdatedOhlcNumber;
+                // Поскольку в ohlc уникальный ключ altname, timestamp
+            }
         }
 
         return new AddOhlcPerMomentsForPairsResultDto(
             $allOhlcForPairNumber,
             $addedOhlcNumber,
-            ($allOhlcForPairNumber - $addedOhlcNumber)
+            $outdatedOhlcNumber
         );
     }
 
