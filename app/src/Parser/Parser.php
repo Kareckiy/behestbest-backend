@@ -36,10 +36,11 @@ class Parser
     {
         $usdPairs = [];
 
-        $assetPairs = $this->krakenProvider->getAssetPairs()->getAssetPairs();
+        $assetPairsResponse = $this->krakenProvider->getAssetPairs();
+        $assetPairs = $assetPairsResponse->getAssetPairs();
 
         foreach ($assetPairs as $assetPair) {
-            if (stripos($assetPair->getAltname(), self::USD)) {
+            if (stripos($assetPair->getAltname(), self::USD) >= 0) {
                 $usdPairs[] = $assetPair;
             }
         }

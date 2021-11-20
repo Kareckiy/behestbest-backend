@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\src\Notifier;
 
 use App\src\Notifier\Clients\TelegramClient;
-use DateInterval;
+use App\src\Parser\Dto\AddOhlcResultDto;
+use App\src\Parser\Dto\UpdatePairsResultDto;
 
 class Notifier
 {
@@ -34,18 +35,15 @@ class Notifier
 
     public function notifyCommandCollectingOhlcFinished(
         string $commandTitle,
-        int $elementsNumber,
-        int $successElementsNumber,
-        int $errorElementsNumber,
-        DateInterval $duration
+        AddOhlcResultDto $addOhlcResultDto
     ): void
     {
         $payload = [
             "✅ Finished {$commandTitle}",
-            "El. number: {$elementsNumber}",
-            "Success el. number: {$successElementsNumber}",
-            "Error el. number: {$errorElementsNumber}",
-            "Duration: " . $duration->format("%H:%I:%S"),
+            "Collected ohlc: {$addOhlcResultDto->getOhlcNumberCollected()}",
+            "Added ohlc: {$addOhlcResultDto->getOhlcNumberAdded()}",
+            "Outdated ohlc: {$addOhlcResultDto->getOhlcNumberOutdated()}",
+            "Duration: " . $addOhlcResultDto->getDuration()->format("%H:%I:%S"),
         ];
 
         $this->telegramClient->sendMessage($payload);
@@ -53,18 +51,15 @@ class Notifier
 
     public function notifyCommandCollectingPairsFinished(
         string $commandTitle,
-        int $pairsCollected,
-        int $pairsAdded,
-        int $pairsDisabled,
-        DateInterval $duration
+        UpdatePairsResultDto $updatePairsResultDto
     ): void
     {
         $payload = [
             "✅ Finished {$commandTitle}",
-            "Collected pairs: {$pairsCollected}",
-            "New pairs: {$pairsAdded}",
-            "Disabled pairs: {$pairsDisabled}",
-            "Duration: " . $duration->format("%H:%I:%S"),
+            "Collected pairs: {$updatePairsResultDto->getCollectedPairsNumber()}",
+            "New pairs: {$updatePairsResultDto->getNewPairs()}",
+            "Disabled pairs: {$updatePairsResultDto->getDisabledPairs()}",
+            "Duration: " . $updatePairsResultDto->getDuration()->format("%H:%I:%S"),
         ];
 
         $this->telegramClient->sendMessage($payload);

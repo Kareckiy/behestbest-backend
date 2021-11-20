@@ -6,10 +6,11 @@ namespace App\src\Parser\Services;
 
 use App\Models\Ohlc;
 use App\Models\Pair;
-use App\src\Notifier\Notifier;
+use App\src\Parser\Dto\AddOhlcPerMomentsForPairsResultDto;
+use App\src\Parser\Dto\AddOhlcResultDto;
+use App\src\Parser\Dto\UpdatePairsResultDto;
 use App\src\Parser\Parser;
 use App\src\Stocks\Kraken\Dto\AssetPair;
-use App\src\Stocks\Kraken\Dto\OhlcPerMoment;
 use App\Storages\PairsStorage;
 use Exception;
 
@@ -17,72 +18,74 @@ class ActualizeService
 {
     private PairsStorage $pairsStorage;
     private Parser $parser;
-    private Notifier $notifier;
 
     private const HALF_SECOND_IN_MS = 500000;
 
     public function __construct(
         PairsStorage $pairsStorage,
-        Parser $parser,
-        Notifier $notifier
+        Parser $parser
     )
     {
         $this->pairsStorage = $pairsStorage;
         $this->parser = $parser;
-        $this->notifier = $notifier;
     }
 
-    public function addOhlc(): void
+    public function addOhlc(): AddOhlcResultDto
     {
-        $commandTitle = 'Ohlc collecting';
-
         $pairs = $this->pairsStorage->getActivePairs();
 
-        $errorsCount = 0;
-        $successAddedCount = 0;
+        $collectedOhlcNumber = 0;
+        $successAddedOhlcNumber = 0;
+        $outdatedOhlcNumber = 0;
         $startTime = now();
 
         foreach ($pairs as $pair) {
             $ohlcByPair = $this->parser->getOhlcByPair($pair);
 
             try {
-                $this->addOhlcPerMomentsForPair($ohlcByPair->getOhlcPerMoments(), $pair);
-                ++$successAddedCount;
+                $addOhlcPerMomentsForPair = $this->addOhlcPerMomentsForPair($ohlcByPair->getOhlcPerMoments(), $pair);
+                $collectedOhlcNumber += $addOhlcPerMomentsForPair->getOhlcForPairNumber();
+                $successAddedOhlcNumber += $addOhlcPerMomentsForPair->getAddedOhlcNumber();
+                $outdatedOhlcNumber += $addOhlcPerMomentsForPair->getOutdatedOhlcNumber();
             } catch (Exception $e) {
-                ++$errorsCount;
                 // logger()->error();
                 // Поскольку в ohlc уникальный ключ altname, timestamp
             }
 
             usleep(self::HALF_SECOND_IN_MS);
-            // логировать (слать в телегу) ошибки
         }
 
         $endTime = now();
 
-        $this->notifier->notifyCommandCollectingOhlcFinished(
-            $commandTitle,
-            count($pairs),
-            $successAddedCount,
-            $errorsCount,
+        return new AddOhlcResultDto(
+            $collectedOhlcNumber,
+            $successAddedOhlcNumber,
+            $outdatedOhlcNumber,
             $endTime->diff($startTime)
         );
     }
 
-    /** @var OhlcPerMoment[] $ohlcPerMoments */
-    private function addOhlcPerMomentsForPair(array $ohlcPerMoments, Pair $pair): void
+    private function addOhlcPerMomentsForPair(array $ohlcPerMoments, Pair $pair): AddOhlcPerMomentsForPairsResultDto
     {
+        $allOhlcForPairNumber = count($ohlcPerMoments);
+        $addedOhlcNumber = 0;
+
         $reversedOhlcPerMoments = array_reverse($ohlcPerMoments);
 
         foreach ($reversedOhlcPerMoments as $ohlcPerMoment) {
             Ohlc::createFromOhlcPerMoment($ohlcPerMoment, $pair);
+            ++$addedOhlcNumber;
         }
+
+        return new AddOhlcPerMomentsForPairsResultDto(
+            $allOhlcForPairNumber,
+            $addedOhlcNumber,
+            ($allOhlcForPairNumber - $addedOhlcNumber)
+        );
     }
 
-    public function updatePairs(): void
+    public function updatePairs(): UpdatePairsResultDto
     {
-        $commandTitle = 'Collecting pairs';
-
         $startTime = now();
 
         $pulledPairs = $this->parser->getUsdPairs();
@@ -96,8 +99,7 @@ class ActualizeService
 
         $endTime = now();
 
-        $this->notifier->notifyCommandCollectingPairsFinished(
-            $commandTitle,
+        return new UpdatePairsResultDto(
             count($pulledPairs),
             count($pairsToAdd),
             count($pairsToDeactivate),

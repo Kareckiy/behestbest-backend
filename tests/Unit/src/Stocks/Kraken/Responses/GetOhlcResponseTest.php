@@ -30,12 +30,12 @@ class GetOhlcResponseTest extends TestCase
 
         return new OhlcPerMoment(
             (int) $ohlcPerFirstMoment[0],
-            (float) $ohlcPerFirstMoment[1],
-            (float) $ohlcPerFirstMoment[2],
-            (float) $ohlcPerFirstMoment[3],
-            (float) $ohlcPerFirstMoment[4],
-            (float) $ohlcPerFirstMoment[5],
-            (float) $ohlcPerFirstMoment[6],
+            (string) $ohlcPerFirstMoment[1],
+            (string) $ohlcPerFirstMoment[2],
+            (string) $ohlcPerFirstMoment[3],
+            (string) $ohlcPerFirstMoment[4],
+            (string) $ohlcPerFirstMoment[5],
+            (string) $ohlcPerFirstMoment[6],
             (int) $ohlcPerFirstMoment[7]
         );
     }
