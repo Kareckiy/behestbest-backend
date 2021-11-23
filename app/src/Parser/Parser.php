@@ -40,7 +40,8 @@ class Parser
         $assetPairs = $assetPairsResponse->getAssetPairs();
 
         foreach ($assetPairs as $assetPair) {
-            if (stripos($assetPair->getAltname(), self::USD) >= 0) {
+            $strposUsd = stripos($assetPair->getAltname(), self::USD);
+            if (is_int($strposUsd) && $strposUsd >= 0) {
                 $usdPairs[] = $assetPair;
             }
         }
