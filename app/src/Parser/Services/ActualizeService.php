@@ -11,8 +11,10 @@ use App\src\Parser\Dto\AddOhlcResultDto;
 use App\src\Parser\Dto\UpdatePairsResultDto;
 use App\src\Parser\Parser;
 use App\src\Stocks\Kraken\Dto\AssetPair;
+use App\src\Stocks\Kraken\Exceptions\KrakenClientException;
 use App\Storages\PairsStorage;
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 
 class ActualizeService
 {
@@ -24,12 +26,16 @@ class ActualizeService
     public function __construct(
         PairsStorage $pairsStorage,
         Parser $parser
-    )
-    {
+    ) {
         $this->pairsStorage = $pairsStorage;
         $this->parser = $parser;
     }
 
+    /**
+     * @return AddOhlcResultDto
+     * @throws GuzzleException
+     * @throws KrakenClientException
+     */
     public function addOhlc(): AddOhlcResultDto
     {
         $pairs = $this->pairsStorage->getActivePairs();
@@ -85,6 +91,11 @@ class ActualizeService
         );
     }
 
+    /**
+     * @return UpdatePairsResultDto
+     * @throws KrakenClientException
+     * @throws GuzzleException
+     */
     public function updatePairs(): UpdatePairsResultDto
     {
         $startTime = now();

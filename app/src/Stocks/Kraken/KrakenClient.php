@@ -13,6 +13,7 @@ use App\src\Stocks\Kraken\Responses\GetAssetPairsResponse;
 use App\src\Stocks\Kraken\Responses\GetOhlcResponse;
 use App\src\Stocks\Kraken\Responses\GetServerTimeResponse;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 
 class KrakenClient
 {
@@ -25,6 +26,12 @@ class KrakenClient
         $this->client = $client;
     }
 
+    /**
+     * @param  GetOhlcRequest  $getOhlcRequest
+     * @return GetOhlcResponse
+     * @throws KrakenClientException
+     * @throws GuzzleException
+     */
     public function getOhlcByPair(GetOhlcRequest $getOhlcRequest)
     {
         $urlPath = '/0/public/OHLC';
@@ -54,6 +61,12 @@ class KrakenClient
         return GetOhlcResponse::createFromJson($responseJson);
     }
 
+    /**
+     * @param  GetAssetPairsRequest  $getAssetPairsRequest
+     * @return GetAssetPairsResponse
+     * @throws KrakenClientException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function getAssetPairs(GetAssetPairsRequest $getAssetPairsRequest): GetAssetPairsResponse
     {
         $urlPath = '/0/public/AssetPairs';

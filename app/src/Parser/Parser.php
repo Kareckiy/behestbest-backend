@@ -6,8 +6,10 @@ namespace App\src\Parser;
 
 use App\Models\Pair;
 use App\src\Stocks\Kraken\Dto\AssetPair;
+use App\src\Stocks\Kraken\Exceptions\KrakenClientException;
 use App\src\Stocks\Kraken\KrakenProvider;
 use App\src\Stocks\Kraken\Responses\GetOhlcResponse;
+use GuzzleHttp\Exception\GuzzleException;
 
 class Parser
 {
@@ -21,8 +23,10 @@ class Parser
     }
 
     /**
-     * @var Pair $pair
+     * @param  Pair  $pair
      * @return GetOhlcResponse
+     * @throws GuzzleException
+     * @throws KrakenClientException
      */
     public function getOhlcByPair(Pair $pair): GetOhlcResponse
     {
@@ -31,7 +35,11 @@ class Parser
         return $this->krakenProvider->getOhlcByPair($pair, $since);
     }
 
-    /** @return AssetPair[] */
+    /**
+     * @return AssetPair[]
+     * @throws KrakenClientException
+     * @throws GuzzleException
+     */
     public function getUsdPairs(): array
     {
         $usdPairs = [];
