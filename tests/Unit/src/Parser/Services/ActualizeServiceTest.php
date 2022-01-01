@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Unit\src\Parser\Services;
 
 use App\Models\Pair;
-use App\src\Parser\Dto\AddOhlcResultDto;
 use App\src\Parser\Services\ActualizeService;
 use App\src\Stocks\Kraken\Dto\AssetPair;
 use App\src\Stocks\Kraken\Dto\OhlcPerMoment;
