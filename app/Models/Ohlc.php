@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\src\Analyzer\Models\AnalyzeOhlcResult;
 use App\src\Stocks\Kraken\Dto\OhlcPerMoment;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Ohlc extends Model
 {
     protected $table = 'ohlc';
 
-    protected $primaryKey = 'id';
-
     public $timestamps = false;
 
     protected $fillable = [
+        'id',
         'altname',
         'open_price',
         'close_price',
@@ -27,6 +28,11 @@ class Ohlc extends Model
         'time',
         'created_at'
     ];
+
+    public function analyzeOhlcResults(): HasMany
+    {
+        return $this->hasMany(AnalyzeOhlcResult::class);
+    }
 
     public static function createFromOhlcPerMoment(
         OhlcPerMoment $ohlcPerMoment,
@@ -47,5 +53,20 @@ class Ohlc extends Model
                 'created_at' => now()
             ]
         );
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getAltname(): string
+    {
+        return $this->altname;
+    }
+
+    public function getVolume(): string
+    {
+        return $this->volume;
     }
 }
