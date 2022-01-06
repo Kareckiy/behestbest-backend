@@ -68,6 +68,7 @@ class Analyzer
         $analyzeOhlcResults = [];
 
         $medianValue = $oldOhlc->median($fieldToCompare);
+        $medianValue = $medianValue > 0 ? $medianValue : 1;
 
         $notProcessedOhlc->each(
             static function (Ohlc $ohlc) use (&$analyzeOhlcResults, $analyzeOhlcTypeId, $medianValue, $fieldToCompare) {
@@ -79,8 +80,8 @@ class Analyzer
                     [
                         'ohlc_id' => $ohlc->getId(),
                         'analyze_ohlc_type_id' => $analyzeOhlcTypeId,
-                        'excess_percent' => $excessPercent,
-                        'excess_absolute' => $excessAbsolute,
+                        'excess_percent' => (float) number_format($excessPercent,2),
+                        'excess_absolute' => (float) number_format($excessAbsolute,2),
                         'created_at' => now()
                     ]
                 );
