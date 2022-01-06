@@ -73,7 +73,7 @@ class Analyzer
             static function (Ohlc $ohlc) use (&$analyzeOhlcResults, $analyzeOhlcTypeId, $medianValue, $fieldToCompare) {
                 $ohlcComparingValue = $ohlc->{$fieldToCompare};
                 $excessAbsolute = $ohlcComparingValue - $medianValue;
-                $excessPercent = $excessAbsolute !== 0 ? $excessAbsolute / $medianValue * 100 : 0;
+                $excessPercent = $excessAbsolute > 0 ? $excessAbsolute / $medianValue * 100 : 0;
 
                 $analyzeOhlcResults[] = new AnalyzeOhlcResult(
                     [
