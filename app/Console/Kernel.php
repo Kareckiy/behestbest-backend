@@ -21,9 +21,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command(CollectPairs::class)->dailyAt('00:00');
-        $schedule->command(CollectOhlc::class)->hourly()->after(
+        $schedule->command(CollectOhlc::class)->hourly()->then(
             function () use ($schedule) {
-                $schedule->command(AnalyzeOhlc::class)->after(
+                $schedule->command(AnalyzeOhlc::class)->then(
                     function () use ($schedule) {
                         $schedule->command(NotificationAnalyzeOhlc::class);
                     }
