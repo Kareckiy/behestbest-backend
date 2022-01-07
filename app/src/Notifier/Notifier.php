@@ -97,8 +97,10 @@ class Notifier
      */
     public function notifyCommandAnalyzeOhlc(array $analyzeOhlcs): void
     {
+        $topNumber = count($analyzeOhlcs);
+
         $payload = [
-            "📈 Analyze top",
+            "📈 Analyze top ({$topNumber})",
         ];
 
         foreach ($analyzeOhlcs as $analyzeOhlc) {

@@ -21,15 +21,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command(CollectPairs::class)->dailyAt('00:00');
-        $schedule->command(CollectOhlc::class)->hourly()->then(
-            function () use ($schedule) {
-                $schedule->command(AnalyzeOhlc::class)->then(
-                    function () use ($schedule) {
-                        $schedule->command(NotificationAnalyzeOhlc::class);
-                    }
-                );
-            }
-        );
+        $schedule->command(CollectOhlc::class)->hourly();
+
+        $schedule->command(AnalyzeOhlc::class)->cron("10 * * * *");
+        $schedule->command(NotificationAnalyzeOhlc::class)->cron("20 * * * *");
     }
 
     protected function commands()

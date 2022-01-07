@@ -6,8 +6,10 @@ namespace App\Models;
 
 use App\src\Analyzer\Models\AnalyzeOhlcResult;
 use App\src\Stocks\Kraken\Dto\OhlcPerMoment;
+use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 class Ohlc extends Model
 {
@@ -68,5 +70,25 @@ class Ohlc extends Model
     public function getVolume(): string
     {
         return $this->volume;
+    }
+
+    public function getCreatedAt(): DateTime
+    {
+        return new Carbon($this->created_at);
+    }
+
+    public function getOpenPrice(): string
+    {
+        return $this->open_price;
+    }
+
+    public function getClosePrice(): string
+    {
+        return $this->close_price;
+    }
+
+    public function getHighPrice(): string
+    {
+        return $this->high_price;
     }
 }

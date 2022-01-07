@@ -30,6 +30,9 @@ class AnalyzeOhlcDto
 
     public function getStringDataForExcessPercent(): string
     {
-        return "{$this->ohlc->getAltname()}: {$this->analyzeOhlcResult->getExcessPercent()}";
+        $createdAt = $this->ohlc->getCreatedAt()->format('H:i');
+        $description = "[{$createdAt}] {$this->ohlc->getOpenPrice()}-{$this->ohlc->getHighPrice()}-{$this->ohlc->getClosePrice()}";
+
+        return "*{$this->ohlc->getAltname()}*: {$this->analyzeOhlcResult->getExcessPercent()}% ({$this->analyzeOhlcResult->getExcessAbsolute()}). \n{$description}";
     }
 }

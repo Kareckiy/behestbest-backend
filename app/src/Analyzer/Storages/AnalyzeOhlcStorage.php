@@ -53,7 +53,7 @@ class AnalyzeOhlcStorage
         float $elementsInTopNumber = 20
     ): Collection {
         $now = now();
-        $hoursAgo = now()->subMonths($hours);
+        $hoursAgo = now()->subHours($hours);
 
         return AnalyzeOhlcResult::where(
             [
