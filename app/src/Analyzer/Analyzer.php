@@ -67,7 +67,7 @@ class Analyzer
     ): array {
         $analyzeOhlcResults = [];
 
-        $medianValue = $oldOhlc->median($fieldToCompare);
+        $medianValue = $oldOhlc->where($fieldToCompare, '>', 0)->median($fieldToCompare);
         $medianValue = $medianValue > 0 ? $medianValue : 1;
 
         $notProcessedOhlc->each(
