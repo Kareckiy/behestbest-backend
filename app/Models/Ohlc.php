@@ -72,9 +72,9 @@ class Ohlc extends Model
         return $this->volume;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getTime(): DateTime
     {
-        return new Carbon($this->created_at);
+        return Carbon::createFromTimestamp($this->time);
     }
 
     public function getOpenPrice(): string
